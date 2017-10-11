@@ -3,6 +3,7 @@
 //@import "../../node_modules/bootstrap/scss/mixins";
 //@import "../../node_modules/bootstrap/scss/utilities";
 
+$screen-sm: 576px;
 $screen-md: 992px;
 $bottomColor: #E2E2E1;
 $topColor: lighten($bottomColor, 2%);
@@ -23,10 +24,129 @@ h1, h2, h3, h4, h5, h6{
   font-weight: 600;
 }
 
-
 a{
   color: #454a4a
 }
+
+#menu{
+  position: absolute;
+  top: 10px; left: 10px;
+  z-index: 20;
+}
+
+#hamburger{
+  display: block;
+  position: fixed;
+  border: none;
+  background: none;
+  z-index: 10;
+  top: 20px;
+  left: 20px;
+
+  &:focus{
+    outline: none;
+  }
+}
+
+// https://codepen.io/designcouch/pen/Atyop
+#nav-icon{
+  width: 25px;
+  height: 20px;
+  position: relative;
+  transform: rotate(0deg);
+  transition: .5s ease-in-out;
+  cursor: pointer;
+
+  span{
+    display: block;
+    position: absolute;
+    height: 2px;
+    width: 100%;
+    opacity: 1;
+    left: 0;
+    transform: rotate(0deg);
+    transition: .1s ease-in-out;
+    background: #000;
+
+    &:nth-child(1){
+      top: 0;
+    }
+
+    &:nth-child(2),
+    &:nth-child(3){
+      top: 50%;
+    }
+
+    &:nth-child(4){
+      top: 100%;
+    }
+  }
+
+  &.open span{
+    &:nth-child(1){
+      top: 18px;
+      width: 0;
+      left: 50%;
+    }
+
+    &:nth-child(2){
+      top: 45%;
+      transform: rotate(45deg);
+    }
+
+    &:nth-child(3){
+      top: 45%;
+      transform: rotate(-45deg);
+    }
+
+    &:nth-child(4){
+      top: 18px;
+      width: 0;
+      left: 50%;
+    }
+  }
+
+}
+
+
+nav{
+  background: #2d3232;
+  position: fixed;
+  top: 0; right: 0; bottom: 0; left: 0;
+  z-index: 9;
+  opacity: 0;
+  display: none;
+  transition: all 350ms;
+
+  &.visible{
+    display: flex;
+  }
+
+  &.on{
+    opacity: 1;
+  }
+
+  ul{
+    display: flex;
+    flex-direction: column;
+    padding: 0;
+    margin: 0 0 0 10%;
+    align-self: center;
+  }
+
+  li{
+    list-style-type: none;
+    margin: 0;
+  }
+
+  a{
+    line-height: 80px;
+    font-size: 40px;
+    text-decoration: none;
+    color: #e1e1e1;
+  }
+}
+
 
 #spiders{
   display: none;
@@ -81,7 +201,6 @@ section{
     }
   }
 }
-
 
 .landing{
   position: relative;
@@ -334,6 +453,58 @@ section{
     @media (min-width: $screen-md){
       width: 75%;
     }
+  }
+}
+
+.clients{
+  background: lightgrey;
+
+  article{
+    font-weight: 400;
+    line-height: 2em;
+    width: 100%;
+
+    @media (min-width: $screen-sm){
+      width: 50%;
+    }
+
+    @media (min-width: $screen-md){
+      line-height: 1.5em;
+      width: 33.333333%;
+    }
+  }
+
+  .content{
+    padding: 15px;
+    margin: 0 0 20px 0;
+    background: #e1e1e1;
+
+    @media (min-width: $screen-sm){
+      margin: 20px;
+    }
+  }
+
+  h5{
+    margin: 0;
+    font-weight: 400;
+    margin-bottom: 15px;
+    text-transform: uppercase;
+    font-size: 18px;
+  }
+
+  a{
+    text-decoration: none;
+    font-weight: 700;
+  }
+
+  ul{
+    width: 100%;
+    margin: 0;
+    padding: 0;
+  }
+
+  li{
+    list-style-type: none;
   }
 }
 

@@ -73,215 +73,217 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_gsap___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_gsap__);
 
 
-const opts = {
-	particleColor: "rgb(200,200,200)",
-	lineColor: "rgb(200,200,200)",
-	particleAmount: 10,
-	defaultSpeed: 1,
-	variantSpeed: 0.2,
-	defaultRadius: 2,
-	variantRadius: 2,
-	linkRadius: 200,
-	stepX: 150,
-	stepY: 120,
-	gridH: 10,
-	gridW: 15
-}
+// Animation
+(function(){
 
-let w, h, tid //stepX, stepY
-let particles = []
-let delay = 500
-let rgb = opts.lineColor.match(/\d+/g)
+	const opts = {
+		particleColor: "rgb(200,200,200)",
+		lineColor: "rgb(200,200,200)",
+		particleAmount: 10,
+		defaultSpeed: 1,
+		variantSpeed: 0.2,
+		defaultRadius: 2,
+		variantRadius: 2,
+		linkRadius: 200,
+		stepX: 150,
+		stepY: 120,
+		gridH: 10,
+		gridW: 15
+	}
 
-const canvasBody = document.getElementById("spiders")
-let drawArea
+	let w, h, tid //stepX, stepY
+	let particles = []
+	let delay = 500
+	let rgb = opts.lineColor.match(/\d+/g)
 
-function isMobile(){
-	return window.innerWidth < 992
-}
+	const canvasBody = document.getElementById("spiders")
+	let drawArea
 
-function startAnimate(){
-	if(!canvasBody || isMobile()) return
+	function isMobile(){
+		return window.innerWidth < 992
+	}
 
-	drawArea = canvasBody.getContext('2d')
+	function startAnimate(){
+		if(!canvasBody || isMobile()) return
 
-	window.addEventListener('resize', deBouncer)
+		drawArea = canvasBody.getContext('2d')
 
-	resizeReset()
-	setup()
-}
+		window.addEventListener('resize', deBouncer)
 
-function resizeReset() {
-	w = canvasBody.width = window.innerWidth
-	h = canvasBody.height = window.innerHeight
+		resizeReset()
+		setup()
+	}
 
-	//stepX = (w / opts.gridW + 2)
-	//stepY = (h / opts.gridH + 2)
-}
+	function resizeReset() {
+		w = canvasBody.width = window.innerWidth
+		h = canvasBody.height = window.innerHeight
 
-function deBouncer() {
-	clearTimeout(tid);
-	tid = setTimeout(function() {
+		//stepX = (w / opts.gridW + 2)
+		//stepY = (h / opts.gridH + 2)
+	}
 
-		resizeReset();
-		//setup()
-	}, delay)
-}
+	function deBouncer() {
+		clearTimeout(tid);
+		tid = setTimeout(function() {
 
-function checkDistance(x1, y1, x2, y2){
-	return Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));
-}
+			resizeReset();
+			//setup()
+		}, delay)
+	}
 
-function linkPoints(point1, hubs){
-	for (let i = 0; i < hubs.length; i++) {
-		let distance = checkDistance(point1.x, point1.y, hubs[i].x, hubs[i].y)
-		let opacity = 1 - distance / opts.linkRadius;
-		if (opacity > 0) {
-			drawArea.lineWidth = 0.5;
-			drawArea.strokeStyle = `rgba(${rgb[0]}, ${rgb[1]}, ${rgb[2]}, ${opacity})`
-			drawArea.beginPath()
-			drawArea.moveTo(point1.x, point1.y)
-			drawArea.lineTo(hubs[i].x, hubs[i].y)
-			drawArea.closePath()
-			drawArea.stroke()
+	function checkDistance(x1, y1, x2, y2){
+		return Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));
+	}
+
+	function linkPoints(point1, hubs){
+		for (let i = 0; i < hubs.length; i++) {
+			let distance = checkDistance(point1.x, point1.y, hubs[i].x, hubs[i].y)
+			let opacity = 1 - distance / opts.linkRadius;
+			if (opacity > 0) {
+				drawArea.lineWidth = 0.5;
+				drawArea.strokeStyle = `rgba(${rgb[0]}, ${rgb[1]}, ${rgb[2]}, ${opacity})`
+				drawArea.beginPath()
+				drawArea.moveTo(point1.x, point1.y)
+				drawArea.lineTo(hubs[i].x, hubs[i].y)
+				drawArea.closePath()
+				drawArea.stroke()
+			}
 		}
 	}
-}
 
-function Particle(gridX, gridY){
+	function Particle(gridX, gridY){
 
-	this.gridX = gridX
-	this.gridY = gridY
+		this.gridX = gridX
+		this.gridY = gridY
 
-	this.initialX = (opts.stepX * gridX) + 20 //Math.random() * w
-	this.initialY = (opts.stepY * gridY) + 20 //Math.random() * h
+		this.initialX = (opts.stepX * gridX) + 20 //Math.random() * w
+		this.initialY = (opts.stepY * gridY) + 20 //Math.random() * h
 
-	this.x = this.initialX
-	this.y = this.initialY
+		this.x = this.initialX
+		this.y = this.initialY
 
-	this.direction = Math.round(Math.random()) ? 1 : -1
+		this.direction = Math.round(Math.random()) ? 1 : -1
 
-	this.speed = opts.defaultSpeed + Math.random() * opts.variantSpeed;
-	this.directionAngle = Math.floor(Math.random() * 360);
-	this.color = opts.particleColor;
-	this.radius = 1 //opts.defaultRadius + Math.random() * opts. variantRadius;
-	this.vector = {
-		x: Math.cos(this.directionAngle) * this.speed,
-	};
+		this.speed = opts.defaultSpeed + Math.random() * opts.variantSpeed;
+		this.directionAngle = Math.floor(Math.random() * 360);
+		this.color = opts.particleColor;
+		this.radius = 1 //opts.defaultRadius + Math.random() * opts. variantRadius;
+		this.vector = {
+			x: Math.cos(this.directionAngle) * this.speed,
+		};
 
-	this.prev = particles.find(p => p.gridY === gridY && p.gridX === gridX-1)
+		this.prev = particles.find(p => p.gridY === gridY && p.gridX === gridX-1)
 
 
-	this.update = () => {
-		//console.log('-- this.update', this)
-		const deviation = (1 + Math.random() * opts.stepX)
-		const move = this.initialX + (deviation * this.direction)
-		//this.border();
+		this.update = () => {
+			//console.log('-- this.update', this)
+			const deviation = (1 + Math.random() * opts.stepX)
+			const move = this.initialX + (deviation * this.direction)
+			//this.border();
 
-		//this.x += this.vector.x;
-		//this.y += this.vector.y;
+			//this.x += this.vector.x;
+			//this.y += this.vector.y;
 
-		__WEBPACK_IMPORTED_MODULE_0_gsap__["TweenLite"].to(
-			this, // target
-			this.speed,
-			{
-				x: move,
-				onComplete: () => {
-					//setNearest()
-					//shiftPoint(p)
+			__WEBPACK_IMPORTED_MODULE_0_gsap__["TweenLite"].to(
+				this, // target
+				this.speed,
+				{
+					x: move,
+					onComplete: () => {
+						//setNearest()
+						//shiftPoint(p)
 
-					this.direction = this.direction === 1 ? -1 : 1;
-					this.update()
+						this.direction = this.direction === 1 ? -1 : 1;
+						this.update()
+					}
+				}
+			)
+		};
+
+		this.border = function(){
+			if (this.x >= w || this.x <= 0) {
+				this.vector.x *= -1;
+			}
+			if (this.y >= h || this.y <= 0) {
+				this.vector.y *= -1;
+			}
+			if (this.x > w) this.x = w;
+			if (this.y > h) this.y = h;
+			if (this.x < 0) this.x = 0;
+			if (this.y < 0) this.y = 0;
+		};
+
+		this.draw = function(){
+			drawArea.beginPath();
+			drawArea.arc(this.x, this.y, this.radius, 0, Math.PI*2);
+			drawArea.closePath();
+			drawArea.fillStyle = this.color;
+			drawArea.fill();
+
+			if(this.prev){
+				const dist = checkDistance(this.x, this.y, this.prev.x, this.prev.y)
+				if(dist < 50){
+					const opacity = 1 - (dist / 50)
+					drawArea.lineWidth = 0.5;
+					drawArea.strokeStyle = `rgba(255, 255, 255, ${opacity})` // `rgba(${rgb[0]}, ${rgb[1]}, ${rgb[2]}, ${opacity})`;
+					drawArea.beginPath();
+					drawArea.moveTo(this.x, this.y);
+					drawArea.lineTo(this.prev.x, this.prev.y);
+					drawArea.closePath();
+					drawArea.stroke();
 				}
 			}
-		)
-	};
 
-	this.border = function(){
-		if (this.x >= w || this.x <= 0) {
-			this.vector.x *= -1;
-		}
-		if (this.y >= h || this.y <= 0) {
-			this.vector.y *= -1;
-		}
-		if (this.x > w) this.x = w;
-		if (this.y > h) this.y = h;
-		if (this.x < 0) this.x = 0;
-		if (this.y < 0) this.y = 0;
-	};
+			/*drawArea.beginPath();
+			drawArea.arc(this.initialX, this.initialY, this.radius, 0, Math.PI*2);
+			drawArea.closePath();
+			drawArea.fillStyle = 'rgb(40,40,40)';
+			drawArea.fill();*/
+		};
 
-	this.draw = function(){
-		drawArea.beginPath();
-		drawArea.arc(this.x, this.y, this.radius, 0, Math.PI*2);
-		drawArea.closePath();
-		drawArea.fillStyle = this.color;
-		drawArea.fill();
+		this.update()
 
-		if(this.prev){
-			const dist = checkDistance(this.x, this.y, this.prev.x, this.prev.y)
-			if(dist < 50){
-				const opacity = 1 - (dist / 50)
-				drawArea.lineWidth = 0.5;
-				drawArea.strokeStyle = `rgba(255, 255, 255, ${opacity})` // `rgba(${rgb[0]}, ${rgb[1]}, ${rgb[2]}, ${opacity})`;
-				drawArea.beginPath();
-				drawArea.moveTo(this.x, this.y);
-				drawArea.lineTo(this.prev.x, this.prev.y);
-				drawArea.closePath();
-				drawArea.stroke();
+	}
+
+	function setup(){
+		resizeReset();
+
+		particles = []
+
+		for(let x=0; x*opts.stepX<=w; x++){
+			for(let y=0; y*opts.stepY<=h; y++){
+				particles.push(new Particle(x, y))
 			}
 		}
 
-		/*drawArea.beginPath();
-		drawArea.arc(this.initialX, this.initialY, this.radius, 0, Math.PI*2);
-		drawArea.closePath();
-		drawArea.fillStyle = 'rgb(40,40,40)';
-		drawArea.fill();*/
-	};
+		/*for (let x=1; x<opts.gridW; x++){
 
-	this.update()
+		}*/
 
-}
+		window.requestAnimationFrame(loop);
+	}
 
-function setup(){
-	resizeReset();
+	function loop(){
+		window.requestAnimationFrame(loop);
+		drawArea.clearRect(0,0,w,h);
 
-	particles = []
+		const r = 2
 
-	for(let x=0; x*opts.stepX<=w; x++){
-		for(let y=0; y*opts.stepY<=h; y++){
-			particles.push(new Particle(x, y))
+		//drawArea.rotate(-r * Math.PI / 180);
+
+		for (let i = 0; i < particles.length; i++){
+			//particles[i].update();
+			particles[i].draw();
 		}
+		for (let i = 0; i < particles.length; i++){
+			//linkPoints(particles[i], particles);
+		}
+
+		//drawArea.rotate(r * Math.PI / 180);
+
 	}
 
-	/*for (let x=1; x<opts.gridW; x++){
-
-	}*/
-
-	window.requestAnimationFrame(loop);
-}
-
-function loop(){
-	window.requestAnimationFrame(loop);
-	drawArea.clearRect(0,0,w,h);
-
-	const r = 2
-
-	//drawArea.rotate(-r * Math.PI / 180);
-
-	for (let i = 0; i < particles.length; i++){
-		//particles[i].update();
-		particles[i].draw();
-	}
-	for (let i = 0; i < particles.length; i++){
-		//linkPoints(particles[i], particles);
-	}
-
-	//drawArea.rotate(r * Math.PI / 180);
-
-}
-
-
-;(function(){
+	//-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 
 	const logo = document.querySelector('.logo')
 	const as = document.querySelectorAll('.nav a')
@@ -301,6 +303,7 @@ function loop(){
 
 })()
 
+// Map
 window.initMap = function(){
 
 	const markers = [
@@ -562,8 +565,21 @@ window.initMap = function(){
 
 }
 
+document.addEventListener("DOMContentLoaded", function(){
 
+	const grid = document.querySelector('.grid')
 
+	new Isotope(grid, {
+		itemSelector: 'article',
+		masonry: {
+			columnWidth: 'article',
+			horizontalOrder: true
+		}
+	})
+
+})
+
+// Form
 ;(function(){
 
 	const feedback = document.querySelector('#feedback')
@@ -594,6 +610,43 @@ window.initMap = function(){
 
 	}
 
+
+})()
+
+// Menu + Navigation
+;(function(){
+	const icon = document.querySelector('#nav-icon')
+	const nav = document.querySelector('nav')
+
+	icon.addEventListener('click', function(){
+		if(icon.classList.contains('open')) return close();
+		open()
+	})
+
+	function close(){
+		icon.classList.toggle('open')
+		nav.classList.toggle('on')
+
+		setTimeout(() => {
+			nav.classList.toggle('visible')
+		}, 350)
+
+	}
+
+	function open(){
+		icon.classList.toggle('open')
+		nav.classList.toggle('visible')
+
+		setTimeout(() => {
+			nav.classList.toggle('on')
+		}, 0)
+
+
+	}
+
+	/*setTimeout(() => {
+		open()
+	}, 500)*/
 
 })()
 
